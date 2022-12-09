@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}<title>Informations</title>{% endblock %}
+
+
+{% block content %}
+    <h1>Our blog</h1>
+    <br><br>
+
+    {% if posts %}
+        {% for post in posts %}
+            <article>
+                <h2><a id="title_clickable" href="{% url 'posts:post' slug=post.slug %}">{{ post.title }}</a></h2>
+                <br>
+                <div id="block-posts">
+                    <h5>Published by : <i>{{ post.author_or_default }}, the {{ post.created_on|date:'M d, Y' }}</i></h5>
+                    <p class="content">{{ post.content|safe|truncatewords:10 }}</p>
+                </div>
+            </article>
+            
+            <br>
+        {% endfor %}
+        <p><a href="{% url 'posts:create' %}">Create a post</a></p>
+    {% else %}
+        <article>
+            <h2>{{ post.title }}</h2>
+            <br>
+            <div id="post-headband">
+                <h5>Published by : <i>{{ post.author_or_default }}, the {{ post.created_on|date:'M d, Y' }}</i></h5>
+                {% if request.user.is_authenticated %}
+                    <div><a id="orange" href="{% url 'posts:edit' slug=post.slug %}">Edit post</a>
+                        <a id="red" href="{% url 'posts:delete' slug=post.slug %}">Delete post</a></div>
+                {% endif %}
+            </div>
+            <img id="img_post" src="{{ post.thumbnail.url }}">
+            <p class="content">{{ post.content|safe }}</p>
+        </article>
+        <br>
+        <p><a href="{% url 'posts:home' %}">Navigate through posts</a></p>
+    {% endif %}
+{% endblock %}
